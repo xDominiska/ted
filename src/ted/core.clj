@@ -10,6 +10,8 @@
 
 (def port-no 8330)
 
+(def item nil)
+
 (def scheduled 0)
 (def running 0)
 
@@ -26,8 +28,6 @@
 (defn finished []
   (def running
     (- running 1)))
-
-(def item nil)
 
 (defn planning []
   (scheduling)
@@ -68,7 +68,7 @@
 (defn app [request]
   (println "-------------------------------")
   (println "Incoming Request:")
-  (println request)
+  (println (str (:request-method request) " " (:uri request) " " (:query-string request)))
   (let [response (handler request)]
     (println "Outgoing Response Map:")
     (println response)
