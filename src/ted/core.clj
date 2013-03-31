@@ -3,6 +3,13 @@
         ring.util.response
         ring.middleware.params))
 
+(def response-status 200)
+(def request-succeeded 200)
+(def wrong-request 400)
+(def class-not-found 405)
+
+(def port-no 8330)
+
 (def scheduled 0)
 (def running 0)
 
@@ -30,8 +37,6 @@
             (.run x)
             (finished))))
 
-(def response-status 200)
-
 (defn handler [request]
   (if (= (:request-method request) :get)
     (if (= (:uri request) "/tasks/schedule")
@@ -40,25 +45,25 @@
                         (request :query-string))]
           (if (= b "class")
             (let []
-              (def response-status 200)
+              (def response-status request-succeeded)
               (try (def item 
                      (-> c 
                        (Class/forName)
                        (. getDeclaredConstructor nil)
                        (. newInstance nil)))
                    (planning)
-                (catch ClassNotFoundException e (def response-status 405)))
+                (catch ClassNotFoundException e (def response-status class-not-found)))
                 {:status response-status})
             ;b != "class"
-            {:status 400})))
+            {:status wrong-request})))
       (if (= (:uri request) "/tasks/count-running")
-         {:status 200
+         {:status request-succeeded
           :body (str running)}
          (if (= (:uri request) "/tasks/count-scheduled")
-            {:status 200
+            {:status request-succeeded
              :body (str scheduled)}
-            {:status 400})))
-    {:status 400}))
+            {:status wrong-request})))
+    {:status wrong-request}))
 
 (defn app [request]
   (println "-------------------------------")
@@ -71,4 +76,4 @@
     response))
 
 (defn -main [& args]
-  (run-jetty app {:port 8330 :join? false}))
+  (run-jetty app {:port port-no :join? false}))
