@@ -66,14 +66,7 @@
     {:status wrong-request}))
 
 (defn app [request]
-  (println "-------------------------------")
-  (println "Incoming Request:")
-  (println (str (:request-method request) " " (:uri request) " " (:query-string request)))
-  (let [response (handler request)]
-    (println "Outgoing Response Map:")
-    (println response)
-    (println "-------------------------------")
-    response))
+  (handler request))
 
 (defn -main [& args]
-  (run-jetty app {:port port-no :join? false}))
+  (run-jetty app {:port port-no}))

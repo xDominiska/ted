@@ -1,5 +1,5 @@
 (defproject ted "1.0.0-SNAPSHOT"
-  :description "An internship recrutation project."
+  :description "Task Executing Distributor"
   :dependencies [[org.clojure/clojure "1.5.1"]
                  [ring "1.1.8"]]	
   :java-source-paths ["src"]
