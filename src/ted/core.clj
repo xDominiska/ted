@@ -69,4 +69,6 @@
     (println response)
     (println "-------------------------------")
     response))
-(run-jetty app {:port 8330})
+
+(defn -main [& args]
+  (run-jetty app {:port 8330 :join? false}))
