@@ -5,13 +5,15 @@
   (:require [clj-http.client :as client]))
 
 ;--------------------<functions>--------------------
+(def sleep-time 5000)
+
 (defn not-running []
   (while (not=
            (:body (clj-http.client/get (str "http://localhost:"
                                             ted.core/port-no
                                             "/tasks/count-running")))
            (str 0))
-         (. Thread (sleep 5000))))
+         (. Thread (sleep sleep-time))))
 
 (defn one-task-running []
   (not-running)
@@ -184,7 +186,7 @@
       (:status (:object (.data exc)))) => ted.core/class-not-found))
 
 
-(facts "scheduling a task results in incrementing the 'scheduled' counter or, if there aren't too many running tasks, indirectly the 'running' counter"
+(facts "scheduling a task results in incrementing the 'scheduled' counter or, if there aren't too many running tasks, indirectly the 'running' counter; counters 'scheduled' and 'running' values are always 0 or higher"
 
   (fact "one task running"
     (one-task-running) => true)

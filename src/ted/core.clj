@@ -12,22 +12,18 @@
 
 (def item nil)
 
-(def scheduled 0)
-(def running 0)
+(def scheduled (atom 0))
+(def running (atom 0))
 
 (defn scheduling []
- (def scheduled
-   (+ scheduled 1)))
+  (swap! scheduled inc))
 
 (defn started []
-  (def scheduled
-    (- scheduled 1))
-  (def running
-    (+ running 1)))
+  (swap! scheduled dec)
+  (swap! running inc))
 
 (defn finished []
-  (def running
-    (- running 1)))
+  (swap! running dec))
 
 (defn planning []
   (scheduling)
@@ -58,10 +54,10 @@
             {:status wrong-request})))
       (if (= (:uri request) "/tasks/count-running")
          {:status request-succeeded
-          :body (str running)}
+          :body (str @running)}
          (if (= (:uri request) "/tasks/count-scheduled")
             {:status request-succeeded
-             :body (str scheduled)}
+             :body (str @scheduled)}
             {:status wrong-request})))
     {:status wrong-request}))
 
