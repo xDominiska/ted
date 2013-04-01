@@ -15,17 +15,25 @@
 (def scheduled (atom 0))
 (def running (atom 0))
 
-(defn scheduling []
+(defn scheduling 
+  "Increments the 'scheduled' counter"
+  []
   (swap! scheduled inc))
 
-(defn started []
+(defn started
+  "Decrements the 'scheduled' counter and increments the 'running' counter"
+  []
   (swap! scheduled dec)
   (swap! running inc))
 
-(defn finished []
+(defn finished
+  "Decrements the 'running' counter"
+  []
   (swap! running dec))
 
-(defn planning []
+(defn planning
+  "Schedules a task by creating an agent and sending him the task"
+  []
   (scheduling)
   (def a (agent item))
   (send a (fn[x]
@@ -33,7 +41,9 @@
             (.run x)
             (finished))))
 
-(defn handler [request]
+(defn handler
+  "Proceses the user's request and sends a suitable response"
+  [request]
   (if (= (:request-method request) :get)
     (if (= (:uri request) "/tasks/schedule")
       (let [s (request :query-string)]
@@ -61,8 +71,5 @@
             {:status wrong-request})))
     {:status wrong-request}))
 
-(defn app [request]
-  (handler request))
-
 (defn -main [& args]
-  (run-jetty app {:port port-no}))
+  (run-jetty handler {:port port-no}))
