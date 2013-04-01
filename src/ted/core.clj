@@ -60,7 +60,6 @@
                    (planning)
                 (catch ClassNotFoundException e (def response-status class-not-found)))
                 {:status response-status})
-            ;b != "class"
             {:status wrong-request})))
       (if (= (:uri request) "/tasks/count-running")
          {:status request-succeeded
